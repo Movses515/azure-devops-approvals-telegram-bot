@@ -71,7 +71,7 @@ app.post('/azuredevops-webhook', (req, res) => {
     const body = req.body;
     console.log('Received Azure DevOps webhook:', JSON.stringify(body, null, 2));
 
-    if (body.eventType === 'ms.vss-release.approval-pending-event') {
+    if (body.eventType === 'ms.vss-release.deployment-approval-pending-event') {
         const approvalId = body.resource.id;
         const projectName = body.resource.project.name;
         const releaseName = body.resource.release.name;
