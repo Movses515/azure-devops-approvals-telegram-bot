@@ -8,7 +8,7 @@ app.use(express.json());
 
 // Environment variables
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
-const YOUR_CHAT_ID = process.env.YOUR_CHAT_ID;
+const CHAT_ID = process.env.CHAT_ID;
 const AZURE_ORG = process.env.AZURE_ORG;
 const AZURE_PAT = process.env.AZURE_PAT;
 
@@ -50,14 +50,15 @@ function sendApprovalMessage(chatId, projectName, releaseName, environmentName, 
 // Handle Approve/Reject button clicks
 bot.on('callback_query', async (callbackQuery) => {
     const msg = callbackQuery.message;
-    const [action, approvalId] = callbackQuery.data.split(':');
+    const [action, approvalId, projectNameEncoded] = callbackQuery.data.split(':');
+    const projectName = decodeURIComponent(projectNameEncoded);
 
     try {
         if (action === 'approve') {
-            await approveAzureApproval(approvalId);
+            await approveAzureApproval(approvalId, projectName);
             bot.sendMessage(msg.chat.id, `✅ Successfully approved ID ${approvalId} in Azure DevOps!`);
         } else if (action === 'reject') {
-            await rejectAzureApproval(approvalId);
+            await rejectAzureApproval(approvalId, projectName);
             bot.sendMessage(msg.chat.id, `❌ Successfully rejected ID ${approvalId} in Azure DevOps!`);
         }
     } catch (error) {
@@ -75,9 +76,9 @@ app.post('/azuredevops-webhook', (req, res) => {
         const approvalId = body.resource.id;
         const projectName = body.resource.project.name;
         const releaseName = body.resource.release.name;
-        const environmentName = body.resource.environment.name;
+        const environmentName = body.resource.approval.releaseEnvironment.name;
 
-        sendApprovalMessage(YOUR_CHAT_ID, projectName, releaseName, environmentName, approvalId);
+        sendApprovalMessage(CHAT_ID, projectName, releaseName, environmentName, approvalId);
     }
 
     res.status(200).send('OK');
@@ -90,8 +91,8 @@ app.listen(PORT, () => {
 });
 
 // Approve Approval
-async function approveAzureApproval(approvalId) {
-    const url = `https://vsrm.dev.azure.com/${AZURE_ORG}/_apis/release/approvals/${approvalId}?api-version=7.1-preview.4`;
+async function approveAzureApproval(approvalId, projectName) {
+    const url = `https://vsrm.dev.azure.com/${AZURE_ORG}/${projectName}/_apis/release/approvals/${approvalId}?api-version=7.1-preview.4`;
 
     await axios.patch(url, {
         status: "approved",
@@ -100,8 +101,8 @@ async function approveAzureApproval(approvalId) {
 }
 
 // Reject Approval
-async function rejectAzureApproval(approvalId) {
-    const url = `https://vsrm.dev.azure.com/${AZURE_ORG}/_apis/release/approvals/${approvalId}?api-version=7.1-preview.4`;
+async function rejectAzureApproval(approvalId, projectName) {
+    const url = `https://vsrm.dev.azure.com/${AZURE_ORG}/${projectName}/_apis/release/approvals/${approvalId}?api-version=7.1-preview.4`;
 
     await axios.patch(url, {
         status: "rejected",
