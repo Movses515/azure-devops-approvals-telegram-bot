@@ -38,8 +38,8 @@ function sendApprovalMessage(chatId, projectName, releaseName, environmentName, 
         reply_markup: {
             inline_keyboard: [
                 [
-                    { text: '✅ Approve', callback_data: `approve:${approvalId}` },
-                    { text: '❌ Reject', callback_data: `reject:${approvalId}` }
+                    { text: '✅ Approve', callback_data: `approve:${approvalId}:${encodeURIComponent(projectName)}` },
+                    { text: '❌ Reject', callback_data: `reject:${approvalId}:${encodeURIComponent(projectName)}` }
                 ]
             ]
         }
