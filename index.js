@@ -120,7 +120,7 @@ app.post('/azuredevops-webhook', (req, res) => {
         const status = body.resource.deployment.deploymentStatus;
         const projectName = body.resource.project.name;
         const releaseId = body.resource.environment.releaseId;
-        const releaseName = body.resource.release.name;
+        const releaseName = body.resource.deployment.release.name;
         const environmentId = body.resource.environment.id;
         const environmentName = body.resource.environment.name;
 
