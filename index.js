@@ -92,7 +92,7 @@ app.listen(PORT, () => {
 
 // Approve Approval
 async function approveAzureApproval(approvalId, projectName) {
-    const url = `https://vsrm.dev.azure.com/${AZURE_ORG}/${projectName}/_apis/release/approvals/${approvalId}?api-version=7.1-preview.4`;
+    const url = `https://vsrm.dev.azure.com/${AZURE_ORG}/${projectName}/_apis/release/approvals/${approvalId}?api-version=7.1`;
 
     await axios.patch(url, {
         status: "approved",
@@ -102,10 +102,10 @@ async function approveAzureApproval(approvalId, projectName) {
 
 // Reject Approval
 async function rejectAzureApproval(approvalId, projectName) {
-    const url = `https://vsrm.dev.azure.com/${AZURE_ORG}/${projectName}/_apis/release/approvals/${approvalId}?api-version=7.1-preview.4`;
+    const url = `https://vsrm.dev.azure.com/${AZURE_ORG}/${projectName}/_apis/release/approvals/${approvalId}?api-version=7.1`;
 
     await axios.patch(url, {
         status: "rejected",
-        comments: "Rejected via Movses Martirosyan"
+        comments: "Rejected by Movses Martirosyan"
     }, authHeader);
 }
