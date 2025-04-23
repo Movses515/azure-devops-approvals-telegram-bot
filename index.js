@@ -12,7 +12,7 @@ const CHAT_ID = process.env.CHAT_ID;
 const AZURE_ORG = process.env.AZURE_ORG;
 const AZURE_PAT = process.env.AZURE_PAT;
 
-const ALLOWED_USER_ID = 123456789;
+const ALLOWED_USER_ID = 1618844598;
 
 // Telegram bot
 const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
@@ -119,7 +119,7 @@ app.post('/azuredevops-webhook', (req, res) => {
     if (eventType === 'ms.vss-release.deployment-completed-event') {
         const status = body.resource.deployment.deploymentStatus;
         const projectName = body.resource.project.name;
-        const releaseId = body.resource.release.id;
+        const releaseId = body.resource.environment.releaseId;
         const releaseName = body.resource.release.name;
         const environmentId = body.resource.environment.id;
         const environmentName = body.resource.environment.name;
