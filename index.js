@@ -154,8 +154,12 @@ async function rejectAzureApproval(approvalId, projectName) {
 
 // Redeploy
 async function redeployRelease(projectName, releaseId, environmentId) {
-    const url = `https://vsrm.dev.azure.com/${AZURE_ORG}/${projectName}/_apis/release/releases/${releaseId}/environments/${environmentId}?api-version=7.1-preview.4`;
-    await axios.post(url, {}, authHeader);
+    const url = `https://vsrm.dev.azure.com/${AZURE_ORG}/${projectName}/_apis/release/releases/${releaseId}/environments/${environmentId}?api-version=7.1`;
+
+    await axios.patch(url, {
+        status: "inProgress",
+        comments: "Redeployed by Movses Martirosyan"
+    }, authHeader);
 }
 
 // Start Express server
